@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+app.use(express.json());
 const mongoose = require("mongoose");
 require("dotenv").config();
 
@@ -12,10 +13,8 @@ mongoose.connect(process.env.MONGO_DB_URL, { useNewUrlParser: true, useUnifiedTo
     console.log(err);
   });
 
-
-app.use(express.json());
 app.use("/api/auth", authRoute);
-app.use("/api/users", userRoute)
+app.use("/api/users", userRoute);
 
 app.listen(3003, () => {
   console.log('server running on port 3003');

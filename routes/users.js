@@ -36,17 +36,6 @@ router.delete("/:id", verifyToken, async (req, res) => {
   }
 });
 
-// GET
-router.get("/:id", async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
-    const { password, ...userInfo } = user._doc;
-    res.status(200).json(userInfo);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
-
 // GET ALL
 router.get("/", verifyToken, async (req, res) => {
   const query = req.query.new;
@@ -63,5 +52,36 @@ router.get("/", verifyToken, async (req, res) => {
 });
 
 // GET USER STATS
+router.get("/stats", async (req, res) => {
+  try {
+    const data = await User.aggregate([
+      {
+        $project: {
+          month: { $month: "$createdAt" },
+        },
+      },
+      {
+        $group: {
+          _id: "$month",
+          total: { $sum: 1 },
+        },
+      },
+    ]);
+    res.status(200).json(data)
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// GET ONE USER
+router.get("/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    const { password, ...userInfo } = user._doc;
+    res.status(200).json(userInfo);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 
 module.exports = router;
