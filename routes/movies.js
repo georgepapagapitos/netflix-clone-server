@@ -61,7 +61,7 @@ router.get("/random", verifyToken, async (req, res) => {
         { $sample: { size: 1 } },
       ]);
     }
-    res.status(200).json(movie[0]);
+    res.status(200).json(movie);
   } catch (err) {
     res.status(500).json(err);
   }
@@ -74,6 +74,20 @@ router.get("/:id", verifyToken, async (req, res) => {
     res.status(200).json(movie);
   } catch (err) {
     res.status(500).json(err)
+  }
+});
+
+// GET ALL MOVIES
+router.get("/", verifyToken, async (req, res) => {
+  if (req.user.isAdmin) {
+    try {
+      const movies = await Movie.find({});
+      res.status(200).json(movies.reverse());
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  } else {
+    res.status(403).json("Not authorized");
   }
 });
 
