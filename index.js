@@ -6,6 +6,7 @@ require("dotenv").config();
 
 const authRoute = require("./routes/auth");
 const userRoute = require("./routes/users");
+const movieRoute = require("./routes/movies");
 
 mongoose.connect(process.env.MONGO_DB_URL, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false })
   .then(() => console.log('db connected successfully'))
@@ -15,6 +16,7 @@ mongoose.connect(process.env.MONGO_DB_URL, { useNewUrlParser: true, useUnifiedTo
 
 app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
+app.use("/api/movies", movieRoute);
 
 app.listen(3003, () => {
   console.log('server running on port 3003');
